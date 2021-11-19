@@ -1,0 +1,35 @@
+$appcolor: #2c394b;
+
+body {
+  background-color: #334756;
+  background-image: url("https://www.transparenttextures.com/patterns/diagmonds.png");
+}
+
+.App {
+  margin: 0 auto;
+  background-color: $appcolor;
+  max-width: 700px ;
+  width: 90%;
+  border-radius: 20px;
+  border: 1px solid black;
+  margin-top: 20px;
+}
+
+.Content {
+  width: 95%;
+  margin: auto;
+}
+
+// Media Queries
+
+@media screen and (max-width: 425px) {
+  .App {
+    width: 100vw;
+    min-height: 100vh;
+    margin-top: 0;
+    border: none;
+    border-radius: 0%;
+    position: absolute;
+    top: 0px;
+  }
+}
