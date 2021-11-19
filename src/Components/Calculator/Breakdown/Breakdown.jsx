@@ -1,14 +1,29 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import AppContext from "../../../store/AppContext";
 
 import styles from "./Breakdown.module.scss";
 import BreakdownEntry from "./BreakdownEntry/BreakdownEntry";
 
 export default function Breakdown() {
-  const { loadout } = useContext(AppContext);
+  const { loadout, totalPlateWeight, setTotalPlateWeight } =
+    useContext(AppContext);
 
-  const tableData = loadout.map((plate) => {
-    const { value, amount } = plate;
+  const calculatePlateTotal = () => {
+    let result = 0;
+
+    loadout.forEach((entry) => {
+      const { value, amount } = entry;
+      let total = value * amount;
+      result = result + total;
+    });
+
+    setTotalPlateWeight(result);
+  };
+
+  useEffect(calculatePlateTotal, [loadout, setTotalPlateWeight]);
+
+  const tableData = loadout.map((entry) => {
+    const { value, amount } = entry;
     const total = value * amount;
 
     return (
@@ -23,11 +38,19 @@ export default function Breakdown() {
           <tr>
             <th>Value</th>
             <th>Add/Subtract</th>
-            <th>Amount</th>
+            <th>Amount Per Side</th>
             <th>Total</th>
           </tr>
         </thead>
         <tbody>{tableData}</tbody>
+        <tfoot>
+          <tr>
+            <td></td>
+            <td></td>
+            <td>TOTAL:</td>
+            <td>{totalPlateWeight}</td>
+          </tr>
+        </tfoot>
       </table>
     </div>
   );

@@ -4,9 +4,6 @@ import PlateSet from "./PlateSet/PlateSet";
 import Breakdown from "./Breakdown/Breakdown";
 
 export default function Calculator() {
-
-
-
   return (
     <div className={classes.container}>
       <div>

@@ -18,24 +18,27 @@ export const AppContextProvider = (props) => {
     { value: 5, amount: 0 },
     { value: 2.5, amount: 0 },
   ];
+  const INITIAL_TOTAL_PLATE_WEIGHT = 0;
 
   const [barWeight, setBarWeight] = useState(INITIAL_BARWEIGHT);
   const [userPlates, setUserPlates] = useState(INITIAL_USER_PLATES);
   const [loadout, setLoadout] = useState(INITIAL_LOADOUT);
+  const [totalPlateWeight, setTotalPlateWeight] = useState(
+    INITIAL_TOTAL_PLATE_WEIGHT
+  );
 
-  // Creates array containing objects with value and amount value
-  const createLoadOut = (arr) => {
-    let updatedLoadout = [...loadout];
+  // Creates a new loadout arr based on passed in plates arr
+  const createLoadOut = (platesArr) => {
+    let newLoadout = [];
 
-    arr.forEach((value) => {
+    platesArr.forEach((value) => {
       let plateObj = {
         value: value,
         amount: 0,
       };
-
-      updatedLoadout = [...updatedLoadout, plateObj];
+      newLoadout = [...newLoadout, plateObj];
     });
-    setLoadout((prevVal) => (prevVal = updatedLoadout));
+    setLoadout((prevVal) => (prevVal = newLoadout));
   };
 
   // Updates loadout
@@ -51,9 +54,13 @@ export const AppContextProvider = (props) => {
     let updatedEntry = loadout[matchedIndex];
 
     if (action === "add") {
-      updatedEntry = { ...updatedEntry, amount: updatedEntry.amount + 1 };
+      updatedEntry = { ...updatedEntry, amount: updatedEntry.amount + 2 };
     } else {
-      updatedEntry = { ...updatedEntry, amount: updatedEntry.amount + -1 };
+      if (updatedEntry.amount === 0) {
+        return;
+      } else {
+        updatedEntry = { ...updatedEntry, amount: updatedEntry.amount - 2 };
+      }
     }
 
     updatedLoadout[matchedIndex] = updatedEntry;
@@ -66,8 +73,9 @@ export const AppContextProvider = (props) => {
     return userPlates.includes(+value);
   };
 
-  // Updates userPlates and correspiding loadout format
+  // Updates userPlates and corresponding loadout format
   const updateUserPlates = (value) => {
+    createLoadOut([]);
     let updatedUserPlates;
 
     if (inUserPlateArray(value)) {
@@ -79,6 +87,8 @@ export const AppContextProvider = (props) => {
     createLoadOut(updatedUserPlates);
   };
 
+
+
   const AppContextValue = {
     barWeight,
     setBarWeight,
@@ -88,6 +98,8 @@ export const AppContextProvider = (props) => {
     inUserPlateArray,
     loadout,
     updateLoadout,
+    totalPlateWeight,
+    setTotalPlateWeight
   };
 
   return (
