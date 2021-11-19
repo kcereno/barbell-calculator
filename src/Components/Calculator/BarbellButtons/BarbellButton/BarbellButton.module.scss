@@ -1,0 +1,32 @@
+.container {
+  button {
+    font-size: 1rem;
+    width: 100px;
+    background-color: transparent;
+    border: 1px solid white;
+    color: white;
+    border-radius: 5px;
+    padding: 5px;
+  }
+}
+
+.active {
+  button {
+    background-color: white;
+    color: #2c394b;
+    border: 1px solid red;
+  }
+}
+
+button:hover {
+  background-color: white;
+  color: #2c394b;
+}
+
+@media screen and (max-width: 320px) {
+  .container {
+    button {
+      width: 80px;
+    }
+  }
+}

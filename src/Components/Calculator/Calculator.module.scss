@@ -1,0 +1,15 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+
+$primaryFont: "Open Sans", sans-serif;
+
+.container {
+  color: white;
+  font-family: $primaryFont;
+  h3 {
+    margin: 10px auto;
+    text-decoration: underline;
+  }
+  * {
+    text-align: center;
+  }
+}
