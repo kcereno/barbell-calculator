@@ -23,12 +23,15 @@ export const AppContextProvider = (props) => {
   const [barWeight, setBarWeight] = useState(INITIAL_BARWEIGHT);
   const [userPlates, setUserPlates] = useState(INITIAL_USER_PLATES);
   const [loadout, setLoadout] = useState(INITIAL_LOADOUT);
+  const [targetWeight, setTargetWeight] = useState('');
+  const [totalWeight, setTotalWeight] = useState(barWeight);
   const [totalPlateWeight, setTotalPlateWeight] = useState(
     INITIAL_TOTAL_PLATE_WEIGHT
   );
 
-  // Creates a new loadout arr based on passed in plates arr
-  const createLoadOut = (platesArr) => {
+  //   LOADOUT FUNCTIONS
+  // Creates a new loadout array based on passed in plate array
+  const createNewLoadoutArr = (platesArr) => {
     let newLoadout = [];
 
     platesArr.forEach((value) => {
@@ -45,7 +48,6 @@ export const AppContextProvider = (props) => {
   const updateLoadout = (valueToUpdate, action) => {
     let updatedLoadout = [...loadout];
 
-    // Finds index of arr entry that matches valueToUpdate
     let matchedIndex = loadout.findIndex((entry) => {
       const { value } = entry;
       return value === valueToUpdate;
@@ -68,14 +70,32 @@ export const AppContextProvider = (props) => {
     setLoadout(updatedLoadout);
   };
 
-  // Checks if passed values exists in userPlates array
-  const inUserPlateArray = (value) => {
-    return userPlates.includes(+value);
+  //   Calculates loadout based on passed in weight
+  const calculateLoadout = () => {
+    let remainingWeight = targetWeight - barWeight;
+    let newLoadout = [...loadout];
+
+    newLoadout.forEach((entry) => {
+      if (remainingWeight >= entry.value) {
+        let quantity = Math.floor(remainingWeight / entry.value);
+        remainingWeight = remainingWeight % entry.value;
+        entry.amount = quantity;
+      } else {
+        return;
+      }
+      setLoadout(newLoadout);
+    });
   };
 
-  // Updates userPlates and corresponding loadout format
+  //   TARGET WEIGHT FUNCTION
+    const updateTargetWeight = (newVal) => {
+    setTargetWeight(newVal);
+  };
+
+  //   USERPLATE FUNCTIONS
+  // Updates userPlates array
   const updateUserPlates = (value) => {
-    createLoadOut([]);
+    createNewLoadoutArr([]);
     let updatedUserPlates;
 
     if (inUserPlateArray(value)) {
@@ -84,10 +104,33 @@ export const AppContextProvider = (props) => {
       updatedUserPlates = [...userPlates, +value].sort((a, b) => b - a);
     }
     setUserPlates(updatedUserPlates);
-    createLoadOut(updatedUserPlates);
+    createNewLoadoutArr(updatedUserPlates);
   };
 
+  //   CALCULATING FUNCTIONS
 
+  const calculateTotalWeight = () => {
+    const newTotalWeight = barWeight + totalPlateWeight;
+    setTotalWeight(newTotalWeight);
+  };
+
+  const calculatePlateTotal = () => {
+    let result = 0;
+
+    loadout.forEach((entry) => {
+      const { value, amount } = entry;
+      let total = value * amount;
+      result = result + total;
+    });
+    setTotalPlateWeight(result);
+  };
+
+  //   HELPER FUNCTIONS
+
+  // Checks if passed values exists in userPlates array
+  const inUserPlateArray = (value) => {
+    return userPlates.includes(+value);
+  };
 
   const AppContextValue = {
     barWeight,
@@ -99,7 +142,14 @@ export const AppContextProvider = (props) => {
     loadout,
     updateLoadout,
     totalPlateWeight,
-    setTotalPlateWeight
+    setTotalPlateWeight,
+    calculateLoadout,
+    totalWeight,
+    calculatePlateTotal,
+    calculateTotalWeight,
+    targetWeight,
+    updateTargetWeight,
+    setTargetWeight
   };
 
   return (

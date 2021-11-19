@@ -2,13 +2,30 @@ import classes from "./Calculator.module.scss";
 import BarbellButtons from "./BarbellButtons/BarbellButtons";
 import PlateSet from "./PlateSet/PlateSet";
 import Breakdown from "./Breakdown/Breakdown";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import AppContext from "../../store/AppContext";
 
 export default function Calculator() {
-  const { barWeight, totalPlateWeight } = useContext(AppContext);
+  const {
+    targetWeight,
+    setTargetWeight,
+    loadout,
+    calculateLoadout,
+    totalWeight,
+    calculateTotalWeight,
+  } = useContext(AppContext);
 
-  let totalWeight = barWeight + totalPlateWeight;
+  useEffect(() => {
+    calculateTotalWeight();
+  }, [loadout, calculateTotalWeight]);
+
+  const inputChangeHandler = (e) => {
+    let newVal = e.target.value;
+    setTargetWeight(newVal);
+  };
+  const calculateClickHandler = () => {
+    calculateLoadout();
+  };
 
   return (
     <div className={classes.container}>
@@ -18,7 +35,12 @@ export default function Calculator() {
         <h3>Available Plates</h3>
         <PlateSet />
         <h3>Target Weight</h3>
-        <input type="number"></input>
+        <input
+          type="number"
+          onChange={inputChangeHandler}
+          value={targetWeight}
+        />
+        <button onClick={calculateClickHandler}>Calculate</button>
         <h3>Actual Weight</h3>
         <h4>{totalWeight} lbs</h4>
         <h3>Breakdown</h3>

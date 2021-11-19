@@ -5,22 +5,17 @@ import styles from "./Breakdown.module.scss";
 import BreakdownEntry from "./BreakdownEntry/BreakdownEntry";
 
 export default function Breakdown() {
-  const { loadout, totalPlateWeight, setTotalPlateWeight } =
-    useContext(AppContext);
+  const {
+    loadout,
+    totalPlateWeight,
+    setTotalPlateWeight,
+    calculatePlateTotal,
+  } = useContext(AppContext);
 
-  const calculatePlateTotal = () => {
-    let result = 0;
+  useEffect(() => {
+    calculatePlateTotal();
 
-    loadout.forEach((entry) => {
-      const { value, amount } = entry;
-      let total = value * amount;
-      result = result + total;
-    });
-
-    setTotalPlateWeight(result);
-  };
-
-  useEffect(calculatePlateTotal, [loadout, setTotalPlateWeight]);
+  }, [loadout, setTotalPlateWeight, calculatePlateTotal]);
 
   const tableData = loadout.map((entry) => {
     const { value, amount } = entry;
