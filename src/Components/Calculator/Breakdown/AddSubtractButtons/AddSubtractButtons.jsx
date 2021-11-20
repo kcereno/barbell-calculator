@@ -5,7 +5,10 @@ import styles from "./AddSubtractButtons.modules.scss";
 export default function AddSubtractButtons(props) {
   const { updateLoadout } =
     useContext(AppContext);
-  const { value } = props;
+  const { value, isDisabled } = props;
+
+
+  console.log(isDisabled)
 
   const buttonClickHandler = (e) => {
     const action = e.target.value;
@@ -19,7 +22,7 @@ export default function AddSubtractButtons(props) {
       <button onClick={buttonClickHandler} value="add">
         +
       </button>
-      <button onClick={buttonClickHandler} value="subtract">
+      <button onClick={buttonClickHandler} value="subtract" disabled={isDisabled}>
         -
       </button>
     </div>

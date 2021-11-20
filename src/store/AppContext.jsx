@@ -30,8 +30,8 @@ export const AppContextProvider = (props) => {
   );
 
   //   LOADOUT FUNCTIONS
-  // Creates a new loadout array based on passed in plate array
-  const createNewLoadoutArr = (platesArr) => {
+  // Creates a new loadout object array based on passed in plate array
+  function createNewLoadoutArr(platesArr) {
     let newLoadout = [];
 
     platesArr.forEach((value) => {
@@ -41,45 +41,43 @@ export const AppContextProvider = (props) => {
       };
       newLoadout = [...newLoadout, plateObj];
     });
-    setLoadout((prevVal) => (prevVal = newLoadout));
-  };
+    setLoadout(newLoadout);
+  }
 
   // Updates loadout
-  const updateLoadout = (valueToUpdate, action) => {
+  function updateLoadout(valueToUpdate, action) {
     let updatedLoadout = [...loadout];
+    let matchedIndex = getMatchingIndex(loadout, valueToUpdate);
+    let updatedEntry = updatedLoadout[matchedIndex];
 
-    let matchedIndex = loadout.findIndex((entry) => {
-      const { value } = entry;
-      return value === valueToUpdate;
-    });
+    function updateAmountPerSide(value, action) {
+      console.log(value.amountPerSide === 0);
 
-    let updatedEntry = loadout[matchedIndex];
-
-    if (action === "add") {
-      updatedEntry = {
-        ...updatedEntry,
-        amountPerSide: updatedEntry.amountPerSide + 1,
-      };
-    } else {
-      if (updatedEntry.amount === 0) {
-        return;
-      } else {
-        updatedEntry = {
-          ...updatedEntry,
-          amountPerSide: updatedEntry.amountPerSide - 1,
+      let updatedValue;
+      if (action === "add") {
+        updatedValue = {
+          ...value,
+          amountPerSide: value.amountPerSide + 1,
+        };
+      } else if (action === "subtract") {
+        updatedValue = {
+          ...value,
+          amountPerSide: value.amountPerSide - 1,
         };
       }
+      return updatedValue;
     }
+
+    updatedEntry = updateAmountPerSide(updatedEntry, action);
 
     updatedLoadout[matchedIndex] = updatedEntry;
 
     setLoadout(updatedLoadout);
-  };
+  }
 
   //   Calculates loadout based on passed in weight
-  const calculateLoadout = () => {
+  function calculateLoadout() {
     let remainingWeight = (targetWeight - barWeight) / 2;
-    console.log(remainingWeight)
     let newLoadout = [...loadout];
 
     newLoadout.forEach((entry) => {
@@ -93,16 +91,16 @@ export const AppContextProvider = (props) => {
       console.log(newLoadout);
       setLoadout(newLoadout);
     });
-  };
+  }
 
   //   TARGET WEIGHT FUNCTION
-  const updateTargetWeight = (newVal) => {
+  function updateTargetWeight(newVal) {
     setTargetWeight(newVal);
-  };
+  }
 
   //   USERPLATE FUNCTIONS
-  // Updates userPlates array
-  const updateUserPlates = (value) => {
+  // Add or removes passed value to userPlates array
+  function updateUserPlates(value) {
     createNewLoadoutArr([]);
     let updatedUserPlates;
 
@@ -113,16 +111,16 @@ export const AppContextProvider = (props) => {
     }
     setUserPlates(updatedUserPlates);
     createNewLoadoutArr(updatedUserPlates);
-  };
+  }
 
   //   CALCULATING FUNCTIONS
 
-  const calculateTotalWeight = () => {
+  function calculateTotalWeight() {
     const newTotalWeight = barWeight + totalPlateWeight;
     setTotalWeight(newTotalWeight);
-  };
+  }
 
-  const calculatePlateTotal = () => {
+  function calculatePlateTotal() {
     let result = 0;
 
     loadout.forEach((entry) => {
@@ -131,14 +129,22 @@ export const AppContextProvider = (props) => {
       result = result + total;
     });
     setTotalPlateWeight(+result);
-  };
+  }
 
   //   HELPER FUNCTIONS
 
   // Checks if passed values exists in userPlates array
-  const inUserPlateArray = (value) => {
+  function inUserPlateArray(value) {
     return userPlates.includes(+value);
-  };
+  }
+
+  function getMatchingIndex(array, valueToMatch) {
+    let result = array.findIndex((item) => {
+      const { value } = item;
+      return value === valueToMatch;
+    });
+    return result;
+  }
 
   const AppContextValue = {
     barWeight,
