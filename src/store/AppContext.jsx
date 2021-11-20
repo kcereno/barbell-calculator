@@ -9,21 +9,21 @@ export const AppContextProvider = (props) => {
   const INITIAL_BARWEIGHT = 45;
   const INITIAL_USER_PLATES = [55, 45, 35, 25, 15, 10, 5, 2.5];
   const INITIAL_LOADOUT = [
-    { value: 55, amount: 0 },
-    { value: 45, amount: 0 },
-    { value: 35, amount: 0 },
-    { value: 25, amount: 0 },
-    { value: 15, amount: 0 },
-    { value: 10, amount: 0 },
-    { value: 5, amount: 0 },
-    { value: 2.5, amount: 0 },
+    { value: 55, amountPerSide: 0 },
+    { value: 45, amountPerSide: 0 },
+    { value: 35, amountPerSide: 0 },
+    { value: 25, amountPerSide: 0 },
+    { value: 15, amountPerSide: 0 },
+    { value: 10, amountPerSide: 0 },
+    { value: 5, amountPerSide: 0 },
+    { value: 2.5, amountPerSide: 0 },
   ];
   const INITIAL_TOTAL_PLATE_WEIGHT = 0;
 
   const [barWeight, setBarWeight] = useState(INITIAL_BARWEIGHT);
   const [userPlates, setUserPlates] = useState(INITIAL_USER_PLATES);
   const [loadout, setLoadout] = useState(INITIAL_LOADOUT);
-  const [targetWeight, setTargetWeight] = useState('');
+  const [targetWeight, setTargetWeight] = useState("");
   const [totalWeight, setTotalWeight] = useState(barWeight);
   const [totalPlateWeight, setTotalPlateWeight] = useState(
     INITIAL_TOTAL_PLATE_WEIGHT
@@ -37,7 +37,7 @@ export const AppContextProvider = (props) => {
     platesArr.forEach((value) => {
       let plateObj = {
         value: value,
-        amount: 0,
+        amountPerSide: 0,
       };
       newLoadout = [...newLoadout, plateObj];
     });
@@ -56,12 +56,18 @@ export const AppContextProvider = (props) => {
     let updatedEntry = loadout[matchedIndex];
 
     if (action === "add") {
-      updatedEntry = { ...updatedEntry, amount: updatedEntry.amount + 2 };
+      updatedEntry = {
+        ...updatedEntry,
+        amountPerSide: updatedEntry.amountPerSide + 1,
+      };
     } else {
       if (updatedEntry.amount === 0) {
         return;
       } else {
-        updatedEntry = { ...updatedEntry, amount: updatedEntry.amount - 2 };
+        updatedEntry = {
+          ...updatedEntry,
+          amountPerSide: updatedEntry.amountPerSide - 1,
+        };
       }
     }
 
@@ -72,23 +78,25 @@ export const AppContextProvider = (props) => {
 
   //   Calculates loadout based on passed in weight
   const calculateLoadout = () => {
-    let remainingWeight = targetWeight - barWeight;
+    let remainingWeight = (targetWeight - barWeight) / 2;
+    console.log(remainingWeight)
     let newLoadout = [...loadout];
 
     newLoadout.forEach((entry) => {
       if (remainingWeight >= entry.value) {
         let quantity = Math.floor(remainingWeight / entry.value);
         remainingWeight = remainingWeight % entry.value;
-        entry.amount = quantity;
+        entry.amountPerSide = quantity;
       } else {
         return;
       }
+      console.log(newLoadout);
       setLoadout(newLoadout);
     });
   };
 
   //   TARGET WEIGHT FUNCTION
-    const updateTargetWeight = (newVal) => {
+  const updateTargetWeight = (newVal) => {
     setTargetWeight(newVal);
   };
 
@@ -118,11 +126,11 @@ export const AppContextProvider = (props) => {
     let result = 0;
 
     loadout.forEach((entry) => {
-      const { value, amount } = entry;
-      let total = value * amount;
+      const { value, amountPerSide } = entry;
+      let total = value * (amountPerSide * 2);
       result = result + total;
     });
-    setTotalPlateWeight(result);
+    setTotalPlateWeight(+result);
   };
 
   //   HELPER FUNCTIONS
@@ -149,7 +157,7 @@ export const AppContextProvider = (props) => {
     calculateTotalWeight,
     targetWeight,
     updateTargetWeight,
-    setTargetWeight
+    setTargetWeight,
   };
 
   return (

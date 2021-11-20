@@ -14,15 +14,20 @@ export default function Breakdown() {
 
   useEffect(() => {
     calculatePlateTotal();
-
   }, [loadout, setTotalPlateWeight, calculatePlateTotal]);
 
   const tableData = loadout.map((entry) => {
-    const { value, amount } = entry;
-    const total = value * amount;
+    const { value, amountPerSide } = entry;
+    const total = value * (amountPerSide * 2);
 
     return (
-      <BreakdownEntry key={value} value={value} amount={amount} total={total} />
+      <BreakdownEntry
+        key={value}
+        value={value}
+        amountPerSide={amountPerSide}
+        totalPlates={amountPerSide * 2}
+        total={total}
+      />
     );
   });
 
@@ -34,12 +39,14 @@ export default function Breakdown() {
             <th>Value</th>
             <th>Add/Subtract</th>
             <th>Amount Per Side</th>
+            <th>Amount Total</th>
             <th>Total</th>
           </tr>
         </thead>
         <tbody>{tableData}</tbody>
         <tfoot>
           <tr>
+            <td></td>
             <td></td>
             <td></td>
             <td>TOTAL:</td>
