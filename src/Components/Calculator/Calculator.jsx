@@ -23,7 +23,7 @@ export default function Calculator() {
     let newVal = e.target.value;
     setTargetWeight(newVal);
   };
-  const calculateClickHandler = () => {
+  const calculateButtonClickHandler = () => {
     calculateLoadout();
   };
 
@@ -40,7 +40,7 @@ export default function Calculator() {
           onChange={inputChangeHandler}
           value={targetWeight}
         />
-        <button onClick={calculateClickHandler}>Calculate</button>
+        <button onClick={calculateButtonClickHandler}>Calculate</button>
         <h3>Actual Weight</h3>
         <h4>{totalWeight} lbs</h4>
         <h3>Breakdown</h3>

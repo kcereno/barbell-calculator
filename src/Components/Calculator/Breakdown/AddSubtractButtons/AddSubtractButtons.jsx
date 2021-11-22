@@ -7,9 +7,6 @@ export default function AddSubtractButtons(props) {
     useContext(AppContext);
   const { value, isDisabled } = props;
 
-
-  console.log(isDisabled)
-
   const buttonClickHandler = (e) => {
     const action = e.target.value;
     updateLoadout(value, action);

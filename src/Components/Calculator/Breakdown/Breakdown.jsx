@@ -49,8 +49,8 @@ export default function Breakdown() {
             <td></td>
             <td></td>
             <td></td>
-            <td>TOTAL:</td>
-            <td>{totalPlateWeight}</td>
+            <td style={{fontWeight: "bold"}}>TOTAL:</td>
+            <td style={{fontWeight: "bold"}}>{totalPlateWeight}</td>
           </tr>
         </tfoot>
       </table>

@@ -30,7 +30,7 @@ export const AppContextProvider = (props) => {
   );
 
   //   LOADOUT FUNCTIONS
-  // Creates a new loadout object array based on passed in plate array
+
   function createNewLoadoutArr(platesArr) {
     let newLoadout = [];
 
@@ -42,43 +42,12 @@ export const AppContextProvider = (props) => {
       newLoadout = [...newLoadout, plateObj];
     });
     setLoadout(newLoadout);
+    return newLoadout;
   }
 
-  // Updates loadout
-  function updateLoadout(valueToUpdate, action) {
-    let updatedLoadout = [...loadout];
-    let matchedIndex = getMatchingIndex(loadout, valueToUpdate);
-    let updatedEntry = updatedLoadout[matchedIndex];
-
-    function updateAmountPerSide(value, action) {
-      console.log(value.amountPerSide === 0);
-
-      let updatedValue;
-      if (action === "add") {
-        updatedValue = {
-          ...value,
-          amountPerSide: value.amountPerSide + 1,
-        };
-      } else if (action === "subtract") {
-        updatedValue = {
-          ...value,
-          amountPerSide: value.amountPerSide - 1,
-        };
-      }
-      return updatedValue;
-    }
-
-    updatedEntry = updateAmountPerSide(updatedEntry, action);
-
-    updatedLoadout[matchedIndex] = updatedEntry;
-
-    setLoadout(updatedLoadout);
-  }
-
-  //   Calculates loadout based on passed in weight
   function calculateLoadout() {
+    let newLoadout = createNewLoadoutArr(userPlates);
     let remainingWeight = (targetWeight - barWeight) / 2;
-    let newLoadout = [...loadout];
 
     newLoadout.forEach((entry) => {
       if (remainingWeight >= entry.value) {
@@ -88,27 +57,43 @@ export const AppContextProvider = (props) => {
       } else {
         return;
       }
-      console.log(newLoadout);
       setLoadout(newLoadout);
     });
   }
 
-  //   TARGET WEIGHT FUNCTION
+  function updateLoadout(valueToUpdate, action) {
+    let updatedLoadout = [...loadout];
+
+    let matchedIndex = getMatchingIndex(loadout, valueToUpdate);
+    let updatedEntry = updatedLoadout[matchedIndex];
+
+    updatedEntry = updateAmountPerSide(updatedEntry, action);
+    updatedLoadout[matchedIndex] = updatedEntry;
+
+    setLoadout(updatedLoadout);
+  }
+
+  //   TARGET WEIGHT FUNCTIONS
+
   function updateTargetWeight(newVal) {
     setTargetWeight(newVal);
   }
 
   //   USERPLATE FUNCTIONS
-  // Add or removes passed value to userPlates array
-  function updateUserPlates(value) {
+
+  function updateUserPlates(plateValue) {
     createNewLoadoutArr([]);
     let updatedUserPlates;
 
-    if (inUserPlateArray(value)) {
-      updatedUserPlates = userPlates.filter((plate) => +plate !== +value);
+    if (inUserPlateArray(plateValue)) {
+      updatedUserPlates = removeFromUserPlatesArr(
+        plateValue,
+        updatedUserPlates
+      );
     } else {
-      updatedUserPlates = [...userPlates, +value].sort((a, b) => b - a);
+      updatedUserPlates = addToUserPlatesArr(plateValue, updatedUserPlates);
     }
+
     setUserPlates(updatedUserPlates);
     createNewLoadoutArr(updatedUserPlates);
   }
@@ -133,7 +118,23 @@ export const AppContextProvider = (props) => {
 
   //   HELPER FUNCTIONS
 
-  // Checks if passed values exists in userPlates array
+  function updateAmountPerSide(value, action) {
+    let updatedValue;
+
+    if (action === "add") {
+      updatedValue = {
+        ...value,
+        amountPerSide: value.amountPerSide + 1,
+      };
+    } else if (action === "subtract") {
+      updatedValue = {
+        ...value,
+        amountPerSide: value.amountPerSide - 1,
+      };
+    }
+    return updatedValue;
+  }
+
   function inUserPlateArray(value) {
     return userPlates.includes(+value);
   }
@@ -144,6 +145,16 @@ export const AppContextProvider = (props) => {
       return value === valueToMatch;
     });
     return result;
+  }
+
+  function removeFromUserPlatesArr(plateValue, userPlateArr) {
+    return (userPlateArr = userPlateArr.userPlates.filter(
+      (plate) => +plate !== +plateValue
+    ));
+  }
+
+  function addToUserPlatesArr(plateValue, userPlateArr) {
+    return (userPlateArr = [...userPlates, +plateValue].sort((a, b) => b - a));
   }
 
   const AppContextValue = {
