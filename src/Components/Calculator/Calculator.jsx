@@ -8,6 +8,7 @@ import AppContext from "../../store/AppContext";
 export default function Calculator() {
   const {
     targetWeight,
+    barWeight,
     setTargetWeight,
     loadout,
     calculateLoadout,
@@ -24,6 +25,9 @@ export default function Calculator() {
     setTargetWeight(newVal);
   };
   const calculateButtonClickHandler = () => {
+    if (targetWeight < barWeight)
+      return alert("Please enter a weight greater than the bar weight");
+
     calculateLoadout();
   };
 
@@ -45,8 +49,6 @@ export default function Calculator() {
         <h4>{totalWeight} lbs</h4>
         <h3>Breakdown</h3>
         <Breakdown />
-        {/* Weight Input */}
-        {/* Plattes */}
       </div>
     </div>
   );
