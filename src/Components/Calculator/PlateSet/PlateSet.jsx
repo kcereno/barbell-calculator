@@ -3,7 +3,7 @@ import AppContext from "../../../store/AppContext";
 import styles from "./PlateSet.module.scss";
 
 export default function PlateSet() {
-  const { updateUserPlates, inUserPlateArray } = useContext(AppContext);
+  const { updateUserPlates, existsInUserPlateArr } = useContext(AppContext);
   const PLATE_ARR = [55, 45, 35, 25, 15, 10, 5, 2.5];
 
   const checkHandler = (e) => {
@@ -16,7 +16,7 @@ export default function PlateSet() {
       <div key={value} className={styles.checkbox}>
         <input
           type="checkbox"
-          checked={inUserPlateArray(value)}
+          checked={existsInUserPlateArr(value)}
           onChange={checkHandler}
           value={value}
         />

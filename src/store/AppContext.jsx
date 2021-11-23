@@ -32,17 +32,17 @@ export const AppContextProvider = (props) => {
   //   LOADOUT FUNCTIONS
 
   function createNewLoadoutArr(platesArr) {
-    let newLoadout = [];
+    let newLoadoutArr = [];
 
     platesArr.forEach((value) => {
       let plateObj = {
         value: value,
         amountPerSide: 0,
       };
-      newLoadout = [...newLoadout, plateObj];
+      newLoadoutArr = [...newLoadoutArr, plateObj];
     });
-    setLoadout(newLoadout);
-    return newLoadout;
+    setLoadout(newLoadoutArr);
+    return newLoadoutArr;
   }
 
   function calculateLoadout() {
@@ -82,16 +82,12 @@ export const AppContextProvider = (props) => {
   //   USERPLATE FUNCTIONS
 
   function updateUserPlates(plateValue) {
-    createNewLoadoutArr([]);
-    let updatedUserPlates;
+    let updatedUserPlates = [...userPlates];
 
-    if (inUserPlateArray(plateValue)) {
-      updatedUserPlates = removeFromUserPlatesArr(
-        plateValue,
-        updatedUserPlates
-      );
+    if (existsInUserPlateArr(plateValue)) {
+      updatedUserPlates = removeFromUserPlatesArr(plateValue);
     } else {
-      updatedUserPlates = addToUserPlatesArr(plateValue, updatedUserPlates);
+      updatedUserPlates = addToUserPlatesArr(plateValue);
     }
 
     setUserPlates(updatedUserPlates);
@@ -135,7 +131,7 @@ export const AppContextProvider = (props) => {
     return updatedValue;
   }
 
-  function inUserPlateArray(value) {
+  function existsInUserPlateArr(value) {
     return userPlates.includes(+value);
   }
 
@@ -147,14 +143,12 @@ export const AppContextProvider = (props) => {
     return result;
   }
 
-  function removeFromUserPlatesArr(plateValue, userPlateArr) {
-    return (userPlateArr = userPlateArr.userPlates.filter(
-      (plate) => +plate !== +plateValue
-    ));
+  function addToUserPlatesArr(plateValue) {
+    return [...userPlates, +plateValue].sort((a, b) => b - a);
   }
 
-  function addToUserPlatesArr(plateValue, userPlateArr) {
-    return (userPlateArr = [...userPlates, +plateValue].sort((a, b) => b - a));
+  function removeFromUserPlatesArr(plateValue) {
+    return userPlates.filter((plate) => +plate !== +plateValue);
   }
 
   const AppContextValue = {
@@ -163,7 +157,7 @@ export const AppContextProvider = (props) => {
     userPlates,
     setUserPlates,
     updateUserPlates,
-    inUserPlateArray,
+    existsInUserPlateArr,
     loadout,
     updateLoadout,
     totalPlateWeight,
